@@ -1,13 +1,41 @@
 import styles from "./Homepage.module.scss";
 import Recipe from "./components/Recipe/Recipe";
 
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Loading from "../../Components/Loading/Loading";
+import { ApiContext } from "../../context/ApiContext";
 
 function Homepage() {
   const [filter, setFilter] = useState("");
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const BASE_URL_API = useContext(ApiContext);
+
+  useEffect(() => {
+    let cancel = false;
+    async function fetchRecipes() {
+      try {
+        setLoading(true);
+        const response = await fetch(BASE_URL_API);
+
+        if (response.ok && !cancel) {
+          const datas = await response.json();
+          setRecipes(Array.isArray(datas) ? datas : [recipes]);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        if (!cancel) {
+          setLoading(false);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    void fetchRecipes();
+    return () => (cancel = true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function handleInput(e) {
     const filter = e.target.value;
     setFilter(filter.trim().toLowerCase());
