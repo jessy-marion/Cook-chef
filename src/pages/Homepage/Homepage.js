@@ -1,19 +1,24 @@
 import styles from "./Homepage.module.scss";
 import Recipe from "./components/Recipe/Recipe";
-import { data } from "../../data/recipes";
+
 import { useState } from "react";
+import Loading from "../../Components/Loading/Loading";
 
 function Homepage() {
   const [filter, setFilter] = useState("");
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
   function handleInput(e) {
     const filter = e.target.value;
     setFilter(filter.trim().toLowerCase());
   }
 
   return (
-    <div className={"container flex-fill p p-20"}>
+    <div className={"container flex-fill d-flex flex-column p-20 "}>
       <h1 className={"my-30"}>Découvrez nos nouvelles recettes</h1>
-      <div className={`d-flex flex-column card p-20 ${styles.contentCard}`}>
+      <div
+        className={`d-flex flex-fill flex-column card p-20 mb-20 ${styles.contentCard}`}
+      >
         <div
           className={`
             d-flex flex-row justify-content-center align-items-center my-30 ${styles.searchBar}`}
@@ -26,13 +31,18 @@ function Homepage() {
             placeholder={"Rechercher"}
           />
         </div>
-        <div className={styles.grid}>
-          {data
-            .filter((r) => r.title.toLowerCase().startsWith(filter))
-            .map((r, index) => (
-              <Recipe key={`${r._id}`} title={r.title} image={r.image} />
-            ))}
-        </div>
+
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className={styles.grid}>
+            {recipes
+              .filter((r) => r.title.toLowerCase().startsWith(filter))
+              .map((r, index) => (
+                <Recipe key={`${r._id}`} title={r.title} image={r.image} />
+              ))}
+          </div>
+        )}
       </div>
     </div>
   );
