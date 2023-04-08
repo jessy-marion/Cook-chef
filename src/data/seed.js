@@ -16,15 +16,3 @@ async function seedRecipes() {
 }
 
 export default seedRecipes;
-
-/*
-try {
-    const response = await fetch("https://restapi.fr/api/recip");
-
-    if (response.ok) {
-        const datas = await response.json();
-        console.log(datas);
-    }
-} catch (e) {
-    console.log(e);
-}*/
